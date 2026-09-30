@@ -91,3 +91,34 @@ models:
       - name: purchased_at
         data_tests:
           - not_null
+
+  - name: int_order_items_per_order
+    description: >
+      Order item records aggregated to one row per order for safe
+      order-level financial and item analysis.
+
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: item_count
+        data_tests:
+          - not_null
+
+      - name: item_subtotal
+        data_tests:
+          - not_null
+
+      - name: freight_total
+        data_tests:
+          - not_null
+
+      - name: order_item_total
+        data_tests:
+          - not_null

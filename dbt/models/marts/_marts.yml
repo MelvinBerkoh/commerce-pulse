@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: >
+      Customer dimension containing one row per unique customer.
+
+    columns:
+      - name: customer_unique_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: lifetime_order_count
+        data_tests:
+          - not_null
+
+  - name: dim_products
+    description: >
+      Product dimension containing cleaned product attributes
+      and English category names.
+
+    columns:
+      - name: product_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_category_name_english
+        data_tests:
+          - not_null
+
+  - name: dim_sellers
+    description: >
+      Seller dimension containing marketplace seller and
+      geographic information.
+
+    columns:
+      - name: seller_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_date
+    description: >
+      Calendar dimension covering the complete order history.
+
+    columns:
+      - name: date_day
+        data_tests:
+          - not_null
+          - unique
+
+  - name: fact_orders
+    description: >
+      Order-level fact table containing financial,
+      customer experience, and delivery metrics.
+
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_unique_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_unique_id
+
+      - name: order_date
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_day
+
+  - name: fact_order_items
+    description: >
+      Item-level fact table containing product, seller,
+      price, and freight measures.
+
+    columns:
+      - name: order_item_key
+        data_tests:
+          - not_null
+          - unique
+
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fact_orders')
+                field: order_id
+
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_id
+
+      - name: seller_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_sellers')
+                field: seller_id
