@@ -54,3 +54,5 @@ dbt/profiles.yml.user.yml
 # dbt local files
 dbt/profiles.yml
 dbt/.user.yml
+# Tableau generated data
+tableau/data/*.csv
