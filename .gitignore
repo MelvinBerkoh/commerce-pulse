@@ -47,3 +47,10 @@ dbt/dbt_packages/
 # Temporary files
 *.tmp
 *.log
+
+# dbt local profile
+dbt/profiles.yml.user.yml
+
+# dbt local files
+dbt/profiles.yml
+dbt/.user.yml
