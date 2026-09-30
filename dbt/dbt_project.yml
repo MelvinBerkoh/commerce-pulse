@@ -1,0 +1,22 @@
+name: "commerce_pulse"
+version: "1.0.0"
+config-version: 2
+
+profile: "commerce_pulse"
+
+model-paths:
+  - "models"
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  commerce_pulse:
+    staging:
+      +schema: staging
+      +materialized: view
+
+    intermediate:
+      +schema: intermediate
+      +materialized: view
