@@ -47,3 +47,6 @@ dbt/dbt_packages/
 # Temporary files
 *.tmp
 *.log
+
+# dbt local profile
+dbt/profiles.yml

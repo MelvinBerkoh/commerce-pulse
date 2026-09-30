@@ -1,0 +1,244 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: >
+      Cleaned customer records. One row represents one order-level
+      customer record.
+
+    columns:
+      - name: customer_id
+        description: Unique order-level customer identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_unique_id
+        description: Identifier used to recognize the same customer across orders.
+        data_tests:
+          - not_null
+
+      - name: customer_zip_code_prefix
+        data_tests:
+          - not_null
+
+      - name: customer_state
+        data_tests:
+          - not_null
+
+  - name: stg_orders
+    description: >
+      Cleaned order records. One row represents one order.
+
+    columns:
+      - name: order_id
+        description: Unique order identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+
+      - name: order_status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - delivered
+                  - shipped
+                  - canceled
+                  - unavailable
+                  - invoiced
+                  - processing
+                  - created
+                  - approved
+
+      - name: purchased_at
+        data_tests:
+          - not_null
+
+      - name: estimated_delivery_at
+        data_tests:
+          - not_null
+
+  - name: stg_order_items
+    description: >
+      Cleaned order item records. One row represents one item position
+      within an order.
+
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: order_item_id
+        data_tests:
+          - not_null
+
+      - name: product_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_products')
+                field: product_id
+
+      - name: seller_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_sellers')
+                field: seller_id
+
+      - name: item_price
+        data_tests:
+          - not_null
+
+      - name: freight_value
+        data_tests:
+          - not_null
+
+  - name: stg_order_payments
+    description: >
+      Cleaned payment records. An order may contain multiple payment rows.
+
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: payment_sequence
+        data_tests:
+          - not_null
+
+      - name: payment_type
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - credit_card
+                  - boleto
+                  - voucher
+                  - debit_card
+                  - not_defined
+
+      - name: payment_installments
+        data_tests:
+          - not_null
+
+      - name: payment_value
+        data_tests:
+          - not_null
+
+  - name: stg_order_reviews
+    description: >
+      Cleaned review records. Orders may contain more than one review.
+
+    columns:
+      - name: review_id
+        data_tests:
+          - not_null
+
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+
+      - name: review_score
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5]
+
+      - name: review_created_at
+        data_tests:
+          - not_null
+
+      - name: review_answered_at
+        data_tests:
+          - not_null
+
+  - name: stg_products
+    description: >
+      Cleaned product catalog. One row represents one product.
+
+    columns:
+      - name: product_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_sellers
+    description: >
+      Cleaned marketplace seller records. One row represents one seller.
+
+    columns:
+      - name: seller_id
+        data_tests:
+          - not_null
+          - unique
+
+      - name: seller_zip_code_prefix
+        data_tests:
+          - not_null
+
+      - name: seller_state
+        data_tests:
+          - not_null
+
+  - name: stg_geolocation
+    description: >
+      Cleaned geographic coordinate records. Multiple rows may exist
+      for the same ZIP code prefix.
+
+    columns:
+      - name: geolocation_zip_code_prefix
+        data_tests:
+          - not_null
+
+      - name: latitude
+        data_tests:
+          - not_null
+
+      - name: longitude
+        data_tests:
+          - not_null
+
+      - name: geolocation_state
+        data_tests:
+          - not_null
+
+  - name: stg_product_categories
+    description: >
+      Portuguese-to-English product category translation lookup.
+
+    columns:
+      - name: product_category_name
+        data_tests:
+          - not_null
+          - unique
+
+      - name: product_category_name_english
+        data_tests:
+          - not_null
