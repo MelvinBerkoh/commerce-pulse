@@ -56,3 +56,5 @@ dbt/profiles.yml
 dbt/.user.yml
 # Tableau generated data
 tableau/data/*.csv
+tableau/.~*.twb
+tableau/.~*.twb*
