@@ -18,6 +18,10 @@ final as (
         orders.order_id,
         orders.customer_unique_id,
 
+        orders.customer_zip_code_prefix,
+        orders.customer_city,
+        orders.customer_state,
+
         orders.purchased_at::date
             as order_date,
 
