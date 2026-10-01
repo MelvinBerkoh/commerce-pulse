@@ -28,6 +28,11 @@ final as (
         orders.purchased_at::date
             as order_date,
 
+        orders.order_status,
+        orders.average_review_score,
+        orders.was_delivered_late,
+        orders.delivery_days,
+
         order_items.product_id,
         order_items.seller_id,
 
